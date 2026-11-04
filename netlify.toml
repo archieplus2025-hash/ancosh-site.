@@ -1,0 +1,9 @@
+[build]
+  command = "python3 build.py --site=https://ancosh.org --repo=OWNER/REPO"
+  publish = "dist"
+
+[build.environment]
+  PYTHON_VERSION = "3.12"
+  # While the site still holds sample content, keep search engines out.
+  # Delete this line (or set it to 0) when the real content is in and you are ready to launch.
+  ANCSH_NOINDEX = "1"
