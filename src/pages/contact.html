@@ -1,0 +1,18 @@
+<section class="pagehead">
+  <p class="orn" aria-hidden="true">&#10022; &#10022; &#10022;</p>
+  <h1 data-i18n="con.h1">Contact</h1>
+  <p class="sub" data-i18n="con.lead">Questions, partnerships or ways to take part? Send a message.</p>
+</section>
+
+<section class="sec">
+  <div class="contact-info">{{contact_line}}</div>
+
+  <form class="form" id="contact-form" name="contact" method="POST" data-endpoint="{{form_endpoint}}" data-email="{{contact_email}}" {{netlify_attrs}} novalidate>
+    {{netlify_fields}}
+    <div><label for="f-name" data-i18n="con.name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+    <div><label for="f-email" data-i18n="con.email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+    <div><label for="f-msg" data-i18n="con.msg">Message</label><textarea id="f-msg" name="message" required></textarea></div>
+    <div><button class="btn" type="submit" data-i18n="con.send">Send message</button></div>
+    <div class="form-msg" id="form-msg" role="status" aria-live="polite"></div>
+  </form>
+</section>
