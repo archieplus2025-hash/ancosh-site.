@@ -99,7 +99,9 @@ EXTRA_PAGES = [
     ("404", "nf.h1", "Page not found", "Page not found."),
 ]
 
-fa = json.loads((DIST / "assets" / "i18n.json").read_text(encoding="utf-8"))["fa"]
+_i18n = json.loads((DIST / "assets" / "i18n.json").read_text(encoding="utf-8"))
+fa = _i18n["fa"]
+ps = _i18n.get("ps", {})
 layout = (SRC / "layout.html").read_text(encoding="utf-8")
 if DEMO:
     layout = layout.replace("</head>", '<script src="assets/js/demo.js" defer></script>\n</head>')
@@ -179,11 +181,14 @@ for slug, key, label, desc in NAV_PAGES + EXTRA_PAGES:
     if (slug, key, label, desc) in NAV_PAGES:
         keys = re.findall(r'data-i18n="([^"]+)"', body)
         fa_text = " ".join(dict.fromkeys([fa[k] for k in keys if k in fa] + [html.unescape(v) for v in re.findall(r'data-fa="([^"]*)"', page)]))
+        ps_text = " ".join(dict.fromkeys([ps[k] for k in keys if k in ps] + [html.unescape(v) for v in re.findall(r'data-ps="([^"]*)"', page)]))
         index.append(
             {
                 "url": f"{slug}.html",
                 "title_en": label,
                 "title_fa": fa.get(key, ""),
+                "title_ps": ps.get(key, ""),
+                "text_ps": ps_text,
                 "text_en": plain(re.sub(r"{{[a-z_]+}}", " ", body)) if False else plain(re.sub(r"<head>.*?</head>|<header.*?</header>|<footer.*?</footer>", " ", page, flags=re.S)),
                 "text_fa": fa_text,
             }

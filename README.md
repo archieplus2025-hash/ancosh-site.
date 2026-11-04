@@ -1,6 +1,6 @@
 # Afghanistan National Council of Sunni Hazaras: website (Phase 1)
 
-Static site, English and Dari (right-to-left), no frameworks. Design: "Heritage & Story" (parchment, deep blue, terracotta; Cormorant Garamond, Lora, Amiri).
+Static site, English, Dari/Farsi and Pashto (right-to-left), no frameworks. Design: "Heritage & Story" (parchment, deep blue, terracotta; Cormorant Garamond, Lora, Amiri).
 
 ## Launch build and demo build
 `python3 build.py --site=https://YOUR-DOMAIN` builds the live site (Phase 1 only) into `dist/`, with a sitemap and robots.txt. Follow `LAUNCH.md` before publishing.
@@ -19,7 +19,7 @@ Member: zahra.noori@example.org / member2026. Administrator: admin@example.org /
 - `src/layout.html` the shared header, menu and footer.
 - `src/pages/*.html` the content of each page.
 - `build.py` rebuilds `dist/` from `src/` (`python3 build.py`). Social links are set at the top of this file.
-- `dist/assets/i18n.json` all Dari text. English text lives in the page files.
+- `dist/assets/i18n.json` all Dari/Farsi (`fa`) and Pashto (`ps`) text. English text lives in the page files.
 
 ## Preview on a computer
     python3 build.py

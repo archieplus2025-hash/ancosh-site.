@@ -41,8 +41,13 @@ def fmt_date(iso):
 
 
 def fa(d, key):
-    v = d.get(key + "_fa")
-    return f' data-fa="{esc(v)}"' if v else ""
+    """Optional Dari/Farsi (data-fa) and Pashto (data-ps) versions of a field; empty ones fall back to English."""
+    out = ""
+    for suffix in ("fa", "ps"):
+        v = d.get(f"{key}_{suffix}")
+        if v:
+            out += f' data-{suffix}="{esc(v)}"'
+    return out
 
 
 def safe_href(url):
@@ -229,8 +234,10 @@ collections:
       - { label: Headline, name: title, widget: string }
       - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
       - { label: Summary, name: summary, widget: text }
-      - { label: Headline in Dari (optional), name: title_fa, widget: string, required: false }
-      - { label: Summary in Dari (optional), name: summary_fa, widget: text, required: false }
+      - { label: Headline in Dari/Farsi (optional), name: title_fa, widget: string, required: false }
+      - { label: Headline in Pashto (optional), name: title_ps, widget: string, required: false }
+      - { label: Summary in Dari/Farsi (optional), name: summary_fa, widget: text, required: false }
+      - { label: Summary in Pashto (optional), name: summary_ps, widget: text, required: false }
   - name: events
     label: Events
     label_singular: Event
@@ -248,8 +255,10 @@ collections:
       - { label: Time (optional, for example 6:00 pm), name: time, widget: string, required: false }
       - { label: Location, name: location, widget: string, required: false }
       - { label: Description, name: description, widget: text, required: false }
-      - { label: Title in Dari (optional), name: title_fa, widget: string, required: false }
-      - { label: Description in Dari (optional), name: description_fa, widget: text, required: false }
+      - { label: Title in Dari/Farsi (optional), name: title_fa, widget: string, required: false }
+      - { label: Title in Pashto (optional), name: title_ps, widget: string, required: false }
+      - { label: Description in Dari/Farsi (optional), name: description_fa, widget: text, required: false }
+      - { label: Description in Pashto (optional), name: description_ps, widget: text, required: false }
   - name: leadership
     label: Leadership
     label_singular: Person
@@ -265,8 +274,10 @@ collections:
       - { label: Title or role, name: role, widget: string }
       - { label: Order on the page (1 is first), name: order, widget: number, value_type: int, min: 1, default: 50 }
       - { label: Photo (optional), name: photo, widget: image, required: false }
-      - { label: Name in Dari (optional), name: name_fa, widget: string, required: false }
-      - { label: Title in Dari (optional), name: role_fa, widget: string, required: false }
+      - { label: Name in Dari/Farsi (optional), name: name_fa, widget: string, required: false }
+      - { label: Name in Pashto (optional), name: name_ps, widget: string, required: false }
+      - { label: Title in Dari/Farsi (optional), name: role_fa, widget: string, required: false }
+      - { label: Title in Pashto (optional), name: role_ps, widget: string, required: false }
   - name: resources
     label: Resources
     label_singular: Resource
@@ -282,7 +293,8 @@ collections:
       - { label: Section, name: category, widget: select, options: ["Documents", "Reports", "Useful links"] }
       - { label: Web address (optional), name: link, widget: string, required: false, hint: "Start with https:// for another website, or use a page of this site such as about.html" }
       - { label: Or upload a file (optional), name: file, widget: file, required: false }
-      - { label: Title in Dari (optional), name: title_fa, widget: string, required: false }
+      - { label: Title in Dari/Farsi (optional), name: title_fa, widget: string, required: false }
+      - { label: Title in Pashto (optional), name: title_ps, widget: string, required: false }
   - name: settings
     label: Contact details and social links
     files:
