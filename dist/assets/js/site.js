@@ -1,8 +1,10 @@
-/* Site behaviour: English/Dari switch (with right-to-left), mobile menu, search, contact form. No dependencies. */
+/* Site behaviour: English/Dari-Farsi/Pashto switch (with right-to-left), mobile menu, search, contact form. No dependencies. */
 (function () {
   'use strict';
-  var dict = {};
+  var dicts = { fa: {}, ps: {} };
   var lang = 'en';
+  var LANGS = ['en', 'fa', 'ps'];
+  function rtl() { return lang === 'fa' || lang === 'ps'; }
 
   function store(get, val) {
     try {
@@ -12,29 +14,30 @@
   }
 
   function t(key, fallback) {
-    if (lang === 'fa' && dict[key]) return dict[key];
+    if (rtl() && dicts[lang][key]) return dicts[lang][key];
     return fallback;
   }
 
   function apply() {
     var root = document.documentElement;
     root.lang = lang;
-    root.dir = lang === 'fa' ? 'rtl' : 'ltr';
+    root.dir = rtl() ? 'rtl' : 'ltr';
     var nodes = document.querySelectorAll('[data-i18n]');
     for (var i = 0; i < nodes.length; i++) {
       var n = nodes[i];
       if (n.dataset.enHtml === undefined) n.dataset.enHtml = n.innerHTML;
-      if (lang === 'fa' && dict[n.dataset.i18n]) {
-        n.textContent = dict[n.dataset.i18n];
+      if (rtl() && dicts[lang][n.dataset.i18n]) {
+        n.textContent = dicts[lang][n.dataset.i18n];
       } else {
         n.innerHTML = n.dataset.enHtml;
       }
     }
-    var fx = document.querySelectorAll('[data-fa]');
+    var fx = document.querySelectorAll('[data-fa],[data-ps]');
     for (var f = 0; f < fx.length; f++) {
       var x = fx[f];
       if (x.dataset.enText === undefined) x.dataset.enText = x.textContent;
-      x.textContent = lang === 'fa' ? x.dataset.fa : x.dataset.enText;
+      var alt = lang === 'fa' ? x.dataset.fa : (lang === 'ps' ? x.dataset.ps : '');
+      x.textContent = alt || x.dataset.enText;
     }
     var ph = document.querySelectorAll('[data-i18n-ph]');
     for (var j = 0; j < ph.length; j++) {
@@ -56,7 +59,7 @@
   }
 
   function setLang(l) {
-    lang = l === 'fa' ? 'fa' : 'en';
+    lang = LANGS.indexOf(l) !== -1 ? l : 'en';
     store(false, lang);
     apply();
   }
@@ -64,14 +67,14 @@
   function initLang() {
     var q = new URLSearchParams(window.location.search).get('lang');
     var saved = store(true);
-    lang = (q === 'fa' || q === 'en') ? q : (saved === 'fa' ? 'fa' : 'en');
+    lang = LANGS.indexOf(q) !== -1 ? q : (LANGS.indexOf(saved) !== -1 ? saved : 'en');
     var btns = document.querySelectorAll('.lang button');
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener('click', function (e) { setLang(e.currentTarget.dataset.lang); });
     }
     fetch('assets/i18n.json')
       .then(function (r) { return r.json(); })
-      .then(function (d) { dict = d.fa || {}; apply(); })
+      .then(function (d) { dicts.fa = d.fa || {}; dicts.ps = d.ps || {}; apply(); })
       .catch(function () { apply(); });
   }
 
@@ -115,7 +118,7 @@
       }
       var needle = q.toLowerCase();
       var hits = index.filter(function (e) {
-        return (e.text_en + ' ' + e.title_en + ' ' + e.text_fa + ' ' + e.title_fa).toLowerCase().indexOf(needle) !== -1;
+        return (e.text_en + ' ' + e.title_en + ' ' + e.text_fa + ' ' + e.title_fa + ' ' + (e.text_ps || '') + ' ' + (e.title_ps || '')).toLowerCase().indexOf(needle) !== -1;
       });
       if (!hits.length) {
         msg = document.createElement('p');
@@ -129,9 +132,9 @@
         item.className = 'item';
         var a = document.createElement('a');
         a.href = e.url;
-        a.textContent = (lang === 'fa' && e.title_fa) ? e.title_fa : e.title_en;
+        a.textContent = (lang === 'fa' && e.title_fa) ? e.title_fa : ((lang === 'ps' && e.title_ps) ? e.title_ps : e.title_en);
         var p = document.createElement('p');
-        var body = (lang === 'fa' && e.text_fa) ? e.text_fa : e.text_en;
+        var body = (lang === 'fa' && e.text_fa) ? e.text_fa : ((lang === 'ps' && e.text_ps) ? e.text_ps : e.text_en);
         p.textContent = body.length > 160 ? body.slice(0, 157) + '...' : body;
         item.appendChild(a);
         item.appendChild(p);
